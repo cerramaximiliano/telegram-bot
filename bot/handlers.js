@@ -1,23 +1,5 @@
 const bot = require("./commands");
 
-function sendWelcomeMessage(chatId, topicId) {
-  const welcomeMessage = `¡Bienvenido al topic "Menú test"!
-  Aquí tienes los comandos disponibles:
-  /start - Mostrar el menú principal
-  /option1 - Seleccionar Opción 1
-  /option2 - Seleccionar Opción 2
-  /option3 - Seleccionar Opción 3
-  /option4 - Seleccionar Opción 4
-  /option5 - Seleccionar Opción 5
-  /option6 - Seleccionar Opción 6`;
-  const options = {
-    chat_id: chatId,
-    text: welcomeMessage,
-    message_thread_id: topicId,
-  };
-  bot.sendMessage(options.chat_id, options.text, options);
-}
-
 function sendMainMenu(chatId, messageId, topicId) {
   const options = {
     chat_id: chatId,
@@ -26,16 +8,16 @@ function sendMainMenu(chatId, messageId, topicId) {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "Opción 1", callback_data: "option1" },
-          { text: "Opción 2", callback_data: "option2" },
+          { text: "Informe Apertura", callback_data: "option1" },
         ],
         [
-          { text: "Opción 3", callback_data: "option3" },
-          { text: "Opción 4", callback_data: "option4" },
+          { text: "Informe Cierre", callback_data: "option2" },
         ],
         [
-          { text: "Opción 5", callback_data: "option5" },
-          { text: "Opción 6", callback_data: "option6" },
+          { text: "Earnings Calendar", callback_data: "option3" },
+        ],
+        [
+          { text: "Economic Calendar", callback_data: "option4" },
         ],
       ],
     },
@@ -64,43 +46,28 @@ function sendSubMenu(chatId, messageId, menuTitle, options, topicId) {
   bot.editMessageText(menuTitle, sendOptions);
 }
 
-bot.on("message", (msg) => {
-  const chatId = msg.chat.id;
-  const messageText = msg.text;
-  const topicId = msg.is_topic_message ? msg.message_thread_id : undefined;
-  console.log(msg);
-  if (topicId) {
-    const topicName = msg.reply_to_message.forum_topic_created.name;
-    if (topicName === "Menú test") {
-      console.log(messageText);
-      if (/\/welcome/.test(messageText)) {
-        sendWelcomeMessage(chatId, topicId);
-      }
-    }
-  }
-});
-
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/informes/, (msg) => {
   const chatId = msg.chat.id;
   const topicId = msg.is_topic_message ? msg.message_thread_id : undefined;
 
   if (topicId) {
     const topicName = msg.reply_to_message.forum_topic_created.name;
-    if (topicName === "Menú test") {
+    console.log(topicName)
+    if (topicName === "Informes") {
       bot.sendMessage(chatId, "Menú Principal:", {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "Opción 1", callback_data: "option1" },
-              { text: "Opción 2", callback_data: "option2" },
+              { text: "Informe Apertura", callback_data: "option1" },
             ],
             [
-              { text: "Opción 3", callback_data: "option3" },
-              { text: "Opción 4", callback_data: "option4" },
+              { text: "Informe Cierre", callback_data: "option2" },
             ],
             [
-              { text: "Opción 5", callback_data: "option5" },
-              { text: "Opción 6", callback_data: "option6" },
+              { text: "Earnings Calendar", callback_data: "option3" },
+            ],
+            [
+              { text: "Economic Calendar", callback_data: "option4" },
             ],
           ],
         },
@@ -117,7 +84,7 @@ bot.on("callback_query", (callbackQuery) => {
 
   if (topicId) {
     const topicName = message.reply_to_message.forum_topic_created.name;
-    if (topicName !== "Menú test") {
+    if (topicName !== "Informes") {
       bot.answerCallbackQuery(callbackQuery.id, {
         text: "Este comando solo está disponible en el topic 'Menú test'.",
       });
@@ -135,11 +102,8 @@ bot.on("callback_query", (callbackQuery) => {
       sendSubMenu(
         message.chat.id,
         message.message_id,
-        "Menú de Opción 1:",
-        [
-          { text: "Sub-Opción 1.1", callback_data: "suboption1_1" },
-          { text: "Sub-Opción 1.2", callback_data: "suboption1_2" },
-        ],
+        `Informe Apertura\nEste es el informe de apertura`,
+        [],
         topicId
       );
       break;
@@ -147,8 +111,8 @@ bot.on("callback_query", (callbackQuery) => {
       sendSubMenu(
         message.chat.id,
         message.message_id,
-        "Menú de Opción 2:",
-        [{ text: "Sub-Opción 2.1", callback_data: "suboption2_1" }],
+        "Informe Cierre:",
+        [],
         topicId
       );
       break;
@@ -156,11 +120,8 @@ bot.on("callback_query", (callbackQuery) => {
       sendSubMenu(
         message.chat.id,
         message.message_id,
-        "Menú de Opción 3:",
-        [
-          { text: "Sub-Opción 3.1", callback_data: "suboption3_1" },
-          { text: "Sub-Opción 3.2", callback_data: "suboption3_2" },
-        ],
+        "Earnings Calendar:",
+        [],
         topicId
       );
       break;
@@ -168,29 +129,8 @@ bot.on("callback_query", (callbackQuery) => {
       sendSubMenu(
         message.chat.id,
         message.message_id,
-        "Menú de Opción 4:",
-        [{ text: "Sub-Opción 4.1", callback_data: "suboption4_1" }],
-        topicId
-      );
-      break;
-    case "option5":
-      sendSubMenu(
-        message.chat.id,
-        message.message_id,
-        "Menú de Opción 5:",
-        [
-          { text: "Sub-Opción 5.1", callback_data: "suboption5_1" },
-          { text: "Sub-Opción 5.2", callback_data: "suboption5_2" },
-        ],
-        topicId
-      );
-      break;
-    case "option6":
-      sendSubMenu(
-        message.chat.id,
-        message.message_id,
-        "Menú de Opción 6:",
-        [{ text: "Sub-Opción 6.1", callback_data: "suboption6_1" }],
+        "Economic Calendar:",
+        [],
         topicId
       );
       break;

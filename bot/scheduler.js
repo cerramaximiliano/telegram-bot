@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const bot = require("./commands");
 const { chatId, topicId } = require("../config");
 
-cron.schedule(
+/* cron.schedule(
   "0 9,17 * * 1-5",
   () => {
     const now = new Date();
@@ -23,3 +23,4 @@ cron.schedule(
     timezone: "America/Argentina/Buenos_Aires",
   }
 );
+ */

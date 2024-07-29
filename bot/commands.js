@@ -4,8 +4,7 @@ const { telegramToken } = require("../config");
 const bot = new TelegramBot(telegramToken, { polling: true });
 
 bot.setMyCommands([
-  { command: "/welcome", description: "Mensaje bienvenida" },
-  { command: "/start", description: "Mostrar el menú principal" },
+  { command: "/informes", description: "Mostrar el menú principal" },
 ]);
 
 module.exports = bot;
